@@ -11,10 +11,19 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-model users {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  image     String
-  createdAt DateTime @default(now())
+model posts {
+  id         Int    @id @default(autoincrement())
+  title      String
+  excerpt    String
+  imageUrl   String
+  slug       String @unique
+  categories Int[]
+  postId     String @unique
+}
+
+model categories {
+  id         Int    @id @default(autoincrement())
+  name       String @unique
+  slug       String @unique
+  categoryId String @unique
 }

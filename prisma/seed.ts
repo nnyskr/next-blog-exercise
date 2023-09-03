@@ -1,46 +1,44 @@
-import prisma from '../lib/prisma'
+import prisma from "../lib/prisma";
+import posts from "../data/posts.json";
+import categories from "../data/categories.json";
 
 async function main() {
-  const response = await Promise.all([
-    prisma.users.upsert({
-      where: { email: 'rauchg@vercel.com' },
+  const postsUpserts = posts.map((post) =>
+    prisma.posts.upsert({
+      where: { postId: `${post.id}` },
       update: {},
       create: {
-        name: 'Guillermo Rauch',
-        email: 'rauchg@vercel.com',
-        image:
-          'https://pbs.twimg.com/profile_images/1576257734810312704/ucxb4lHy_400x400.jpg',
+        title: post.title,
+        excerpt: post.excerpt,
+        imageUrl: post.imageUrl,
+        slug: post.slug,
+        categories: post.categories,
+        postId: `${post.id}`,
       },
-    }),
-    prisma.users.upsert({
-      where: { email: 'lee@vercel.com' },
+    })
+  );
+
+  const categoriesUpserts = categories.map((category) =>
+    prisma.categories.upsert({
+      where: { categoryId: `${category.id}` },
       update: {},
       create: {
-        name: 'Lee Robinson',
-        email: 'lee@vercel.com',
-        image:
-          'https://pbs.twimg.com/profile_images/1587647097670467584/adWRdqQ6_400x400.jpg',
+        name: category.name,
+        slug: category.slug,
+        categoryId: `${category.id}`,
       },
-    }),
-    await prisma.users.upsert({
-      where: { email: 'stey@vercel.com' },
-      update: {},
-      create: {
-        name: 'Steven Tey',
-        email: 'stey@vercel.com',
-        image:
-          'https://pbs.twimg.com/profile_images/1506792347840888834/dS-r50Je_400x400.jpg',
-      },
-    }),
-  ])
-  console.log(response)
+    })
+  );
+
+  const response = await Promise.all([...postsUpserts, ...categoriesUpserts]);
+  console.log(response);
 }
 main()
   .then(async () => {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
