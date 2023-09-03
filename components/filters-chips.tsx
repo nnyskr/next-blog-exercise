@@ -1,14 +1,14 @@
-'use client';
-import { useState, useTransition } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-import { Category } from '@/types';
+"use client";
+import { useState, useTransition } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { Category } from "@/types";
 
 export default function Filters({
   categories,
   currentActiveCategories,
 }: {
   categories: Category[];
-  currentActiveCategories: Category['name'][];
+  currentActiveCategories: Category["name"][];
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -35,15 +35,15 @@ export default function Filters({
 
     const categoriesParam = Object.keys(newActiveCategoriesByName)
       .filter((key) => newActiveCategoriesByName[key])
-      .join(',');
+      .join(",");
 
     if (categoriesParam) {
-      searchParams.set('categories', categoriesParam);
+      searchParams.set("categories", categoriesParam);
     } else {
-      searchParams.delete('categories');
+      searchParams.delete("categories");
     }
 
-    searchParams.delete('page');
+    searchParams.delete("page");
 
     startTransition(() => {
       router.replace(`${pathname}?${searchParams.toString()}`);
@@ -51,19 +51,19 @@ export default function Filters({
   }
 
   return (
-    <div className="flex gap-x-4 px-12 mt-8 items-center">
+    <div className="flex flex-wrap gap-2 px-8 mt-8 items-center">
       {categories.map((category) => (
         <div
           key={category.id}
           onClick={() => onCategoryClick(category.name)}
           className={`p-2 rounded cursor-pointer border ${
-            activeCategoriesByName[category.name] ? 'bg-sky-500' : ''
+            activeCategoriesByName[category.name] ? "bg-sky-500" : ""
           }`}
         >
           {category.name}
         </div>
       ))}
-      {isPending && <div className={'animate-spin'}>🔄</div>}
+      {isPending && <div className={"animate-spin"}>🔄</div>}
     </div>
   );
 }
